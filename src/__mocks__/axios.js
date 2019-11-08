@@ -5,5 +5,12 @@ export default {
             data: {
                 positions: []
             }
+        })),
+    put: jest.fn(() => Promise.resolve(
+        {
+            test: 'test'
+        })),
+    delete: jest.fn(() => Promise.resolve ({
+            test: 'test'
         }))
 }

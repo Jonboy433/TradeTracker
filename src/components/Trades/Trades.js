@@ -22,6 +22,23 @@ export default class Trades extends Component {
             })
             .catch((err) => {})
     };
+
+    updateTradeHandler = (tradeId) => {
+
+        // Grab the first item in the filtered array
+        const updateTrade = this.state.positions.filter((pos) => pos.id === tradeId)[0]
+
+        axios.put(`/api/v1/positions/${tradeId}`, updateTrade)
+            .then(console.log('PUT request sent'))
+    }
+
+    deleteTradeHandler = (tradeId) => {
+
+        const deleteTrade = this.state.positions.filter((pos) => pos.id === tradeId)[0]
+
+        axios.delete(`/api/v1/positions/${tradeId}`, deleteTrade)
+            .then(console.log('DELETE request sent'))
+    }
   
     componentDidMount() {
         // Make API call to get list of trades
@@ -30,28 +47,28 @@ export default class Trades extends Component {
 
     render = () => {
         let tradeWindow
-        let trades = []
+        let trades
+        
 
         if(this.state.positions) {
-            this.state.positions.forEach(pos => {
-                trades.push(<Trade position={pos} />)
-            }); 
+            trades = this.state.positions.map(pos => <Trade key={pos.id} position={pos} 
+                onEditClick={ ()=> this.updateTradeHandler(pos.id)}
+                onDeleteClick={ () => this.deleteTradeHandler(pos.id)} />)
         }
 
         if (!this.state.positions) {
             tradeWindow = <span data-testid="loading">Loading...</span>;
-        } else if (this.state.positions.length === 0 ) {
-            tradeWindow = <span data-testid="no-positions">No positions found</span>;
-        } else if (this.state.positions.length >= 0)  {
-            tradeWindow = <span data-testid="positions">{ trades }</span>;
+        } 
+        else {
+        tradeWindow = this.state.positions.length > 0 ? <span data-testid="positions">{ trades } </span> : <span data-testid="no-positions">No positions found</span>
         }
-
+        
         return (
                 <div>
                     <div id='trades'>
                         { tradeWindow }
                     </div>
-                    <button id='btn-trade-new'></button>
+                    <button id='btn-trade-new'>Add New</button>
                 </div>
                 )
         }
