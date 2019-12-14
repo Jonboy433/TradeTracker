@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, debug, cleanup, getByTestId, queryByTestId, waitForElement, fireEvent } from '@testing-library/react'
+import { render, cleanup, waitForElement, fireEvent } from '@testing-library/react'
 import Trades from '../Trades/Trades'
 import mockAxios from 'axios'
 
@@ -44,7 +44,7 @@ describe('Trades', () => {
         test('shows Loading message and then disappears after we get a response', async() => {
 
             mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {
-                positions: [1,2,3]
+                positions: [{id: 'testId'}]
             }}))
 
             const { queryByTestId, getByTestId, debug } = render(<Trades />)
@@ -71,7 +71,7 @@ describe('Trades', () => {
         });
 
         test('shows a Positions element if trades are found', async () => {
-            mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {positions: [1,2]}}))
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {positions: [{id: 'testId'}]}}))
             const { findByTestId } = render (<Trades />)
 
             const trades = await waitForElement(() => findByTestId("positions") )
@@ -119,6 +119,7 @@ describe('Trades', () => {
         });
 
         test('should make a trade editable when Edit is clicked', async () => {
+            
             mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {positions:[{
                 id: 1,
                 ticker: 'TSLA',
@@ -128,98 +129,72 @@ describe('Trades', () => {
                 status: 'Open',
                 openDate: 11/15/19,
                 closeDate: 11/16/19
-            },{
-                id: 2,
-                ticker: 'AAPL',
-                optionTicker: 'TSLA111519C270',
-                purchasePrice: 1.35,
-                closePrice: 2.00,
-                status: 'Open',
-                openDate: 11/15/19,
-                closeDate: 11/16/19
             }]}}))
 
-            const { findAllByTestId, findByTestId } = render (<Trades />)
-            await waitForElement(() => findByTestId("positions"))
+            const { getAllByText, getByLabelText } = render(<Trades />)
+            const editBtn = (await waitForElement( () => getAllByText(/Edit/)))[0]
+            
+            fireEvent.click(editBtn)
 
-            const editBtns = await waitForElement(() => findAllByTestId('test'))
-            //Click the 1st button you find
-
-            //Expect to see new buttons
+            // Check for input fields
+            const inputField = getByLabelText(/Ticker:/)
+            expect(inputField).not.toBeNull();
             
         })
     });
 
     describe('Trade Management', () => {
        
+        beforeEach(() => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {positions:[{
+                id: 1,
+                ticker: 'TSLA',
+                optionTicker: 'TSLA111519C270',
+                purchasePrice: 1.35,
+                closePrice: 2.00,
+                status: 'Open',
+                openDate: 11/15/19,
+                closeDate: 11/16/19
+            },{
+                id: 2,
+                ticker: 'AAPL',
+                optionTicker: 'TSLA111519C270',
+                purchasePrice: 1.35,
+                closePrice: 2.00,
+                status: 'Open',
+                openDate: 11/15/19,
+                closeDate: 11/16/19
+            }]}}))
+        });
+        
         test('should allow you to create a new trade', () => {
             // Calls the API when submitting a new trade
         
         });
 
+        test('should allow you to edit a trade', async () => {
+            // Selet a trade
+
+            // Make some changes
+
+            // Submit changes
+        });
+
         test('should make DELETE request with proper ID', async () => {
             // Calls the API when deleting a trade
-            mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {positions:[{
-                id: 1,
-                ticker: 'TSLA',
-                optionTicker: 'TSLA111519C270',
-                purchasePrice: 1.35,
-                closePrice: 2.00,
-                status: 'Open',
-                openDate: 11/15/19,
-                closeDate: 11/16/19
-            },{
-                id: 2,
-                ticker: 'AAPL',
-                optionTicker: 'TSLA111519C270',
-                purchasePrice: 1.35,
-                closePrice: 2.00,
-                status: 'Open',
-                openDate: 11/15/19,
-                closeDate: 11/16/19
-            }]}}))
 
             const { getAllByText } = render(<Trades />)
             // Find the Save button
-            const deleteBtns = await waitForElement(() => getAllByText(/Delete/))
+            const deleteBtn = (await waitForElement(() => getAllByText(/Delete/)))[0]
 
-            fireEvent.click(deleteBtns[0])
+            fireEvent.click(deleteBtn)
 
             expect(mockAxios.delete).toHaveBeenCalled();
-            expect(mockAxios.delete).toHaveBeenCalledWith('/api/v1/positions/1', {
-                id: 1,
-                ticker: 'TSLA',
-                optionTicker: 'TSLA111519C270',
-                purchasePrice: 1.35,
-                closePrice: 2.00,
-                status: 'Open',
-                openDate: 11/15/19,
-                closeDate: 11/16/19
-            } );
             expect(mockAxios.delete).toHaveBeenCalledWith('/api/v1/positions/1');
+            expect(mockAxios.delete).toHaveBeenCalledTimes(1);
         });
 
         test('should make PUT request with proper ID and payload', async () => {
-            // Calls the API when editing
-            mockAxios.get.mockImplementationOnce(() => Promise.resolve({data: {positions:[{
-                id: 1,
-                ticker: 'TSLA',
-                optionTicker: 'TSLA111519C270',
-                purchasePrice: 1.35,
-                closePrice: 2.00,
-                status: 'Open',
-                openDate: 11/15/19,
-                closeDate: 11/16/19
-            },{
-                id: 2,
-                ticker: 'AAPL',
-                optionTicker: 'TSLA111519C270',
-                purchasePrice: 1.35,
-                closePrice: 2.00,
-                status: 'Open',
-                openDate: 11/15/19,
-                closeDate: 11/16/19
-            }]}}))
 
             const { getAllByText } = render(<Trades />)
             // Find the Save button

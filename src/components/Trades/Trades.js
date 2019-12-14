@@ -29,15 +29,13 @@ export default class Trades extends Component {
         const updateTrade = this.state.positions.filter((pos) => pos.id === tradeId)[0]
 
         axios.put(`/api/v1/positions/${tradeId}`, updateTrade)
-            .then(console.log('PUT request sent'))
+            .then()
     }
 
     deleteTradeHandler = (tradeId) => {
 
-        const deleteTrade = this.state.positions.filter((pos) => pos.id === tradeId)[0]
-
-        axios.delete(`/api/v1/positions/${tradeId}`, deleteTrade)
-            .then(console.log('DELETE request sent'))
+        axios.delete(`/api/v1/positions/${tradeId}`)
+            .then()
     }
   
     componentDidMount() {
