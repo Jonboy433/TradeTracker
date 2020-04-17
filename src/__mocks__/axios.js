@@ -12,5 +12,8 @@ export default {
         })),
     delete: jest.fn(() => Promise.resolve ({
             test: 'test'
-        }))
+        })),
+    post: jest.fn(() => Promise.resolve({
+            test: 'test'
+         }) )
 }

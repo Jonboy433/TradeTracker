@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Trade from '../Trade/Trade'
+import NewTrade from '../NewTrade/NewTrade'
 import axios from 'axios'
 
 export default class Trades extends Component {
@@ -9,11 +10,13 @@ export default class Trades extends Component {
 
         this.state = {
             // initial state is undefined
-            positions: undefined
+            positions: undefined,
+            showNewTradeWindow: false
         }
     }
 
     getTrades = () => {
+  
         axios.get('/api/v1/positions/')
             .then((resp) => {
                 this.setState({
@@ -22,6 +25,21 @@ export default class Trades extends Component {
             })
             .catch((err) => {})
     };
+
+    /**
+     * 
+     * Add a trade
+     * @param {string} ticker - The ticker for the position
+     * @param {string} price - The open price for the position
+     * @param {string} quantity - Number of shares/contracts opened
+     * @returns List of positions
+     * @memberof Trades
+     */
+    /* postTradeHandler = (ticker, purchasePrice, quantity) => {        
+        
+        let data
+        axios.post('/api/v1/positions', data )
+    } */
 
     updateTradeHandler = (tradeId) => {
 
@@ -32,10 +50,21 @@ export default class Trades extends Component {
             .then()
     }
 
+    /**
+     * Delete a trade
+     * @param {string} tradeId - ID of the trade to be deleted
+     * @memberof Trades
+     */
     deleteTradeHandler = (tradeId) => {
 
         axios.delete(`/api/v1/positions/${tradeId}`)
             .then()
+    }
+
+    newTradeToggleHandler = (isVisible) => {
+        // Toggle visibility for the new trade window
+        this.state.showNewTradeWindow === true ? 
+        this.setState({showNewTradeWindow: false}) : this.setState({showNewTradeWindow: true})
     }
   
     componentDidMount() {
@@ -45,6 +74,7 @@ export default class Trades extends Component {
 
     render = () => {
         let tradeWindow
+        let newTradeWindow
         let trades
         
 
@@ -60,13 +90,23 @@ export default class Trades extends Component {
         else {
         tradeWindow = this.state.positions.length > 0 ? <span data-testid="positions">{ trades } </span> : <span data-testid="no-positions">No positions found</span>
         }
+
+        if (this.state.showNewTradeWindow === true) {
+            // Show the window
+            newTradeWindow = <NewTrade onSubmitClick={ () => this.postTradeHandler('TSLA',1.25,1)} onCancelClick={ ()=> this.newTradeToggleHandler}/>
+        }
+        else {
+            // Don't show it
+            newTradeWindow = undefined
+        }
         
         return (
                 <div>
                     <div id='trades'>
                         { tradeWindow }
                     </div>
-                    <button id='btn-trade-new'>Add New</button>
+                    <button id='btn-trade-new' onClick={ this.newTradeToggleHandler }>Add New</button>
+                        { newTradeWindow }
                 </div>
                 )
         }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, cleanup, waitForElement, fireEvent } from '@testing-library/react'
+import { render, cleanup, waitForElement, fireEvent, wait, waitForElementToBeRemoved } from '@testing-library/react'
 import Trades from '../Trades/Trades'
 import mockAxios from 'axios'
 
@@ -140,7 +140,59 @@ describe('Trades', () => {
             const inputField = getByLabelText(/Ticker:/)
             expect(inputField).not.toBeNull();
             
-        })
+        });
+
+        test('should make sure new trade window is not visible by default', () => {
+            
+            const { queryByPlaceholderText } = render (<Trades />)
+            // Component should not be found
+            const comp = queryByPlaceholderText(/Ticker/)
+            expect(comp).toBeNull();
+        });
+
+        test('should display the new trade window when Add New is clicked', async () => {
+
+            const { getByText, queryByPlaceholderText } = render (<Trades />)
+            
+            // Component should not be found yet
+            const comp = queryByPlaceholderText(/Ticker/)
+            expect(comp).toBeNull();
+
+            // Click the Add New Button
+            const addNewBtn = getByText(/Add New/)
+            fireEvent.click(addNewBtn)
+
+            // Check that the component is now available
+            const inputTicker = (await waitForElement( () => queryByPlaceholderText(/Ticker/)))
+            expect(inputTicker).not.toBeNull();
+        });
+
+        test('should remove the new trade window when the Cancel button is clicked', async () => {
+            
+            const { getByText, queryByText, debug } = render (<Trades />)
+            
+            // Find Add New button and click it\
+            const addNewBtn = getByText(/Add New/)
+            fireEvent.click(addNewBtn)
+
+            // Check if component is visible
+            let componentHeader = queryByText(/Submit a new trade/)
+            expect(componentHeader).not.toBeNull();
+            
+            // Find and click Cancel button
+            const cancelBtn = (await waitForElement( () => queryByText(/Cancel/)))
+            expect(cancelBtn).not.toBeNull();
+            fireEvent.click(cancelBtn)
+
+            // Make sure the component is no longer visible
+            componentHeader = queryByText(/Submit a new trade/)
+            expect(componentHeader).toBeNull();
+            
+            
+
+
+
+        });
     });
 
     describe('Trade Management', () => {
@@ -165,11 +217,6 @@ describe('Trades', () => {
                 openDate: 11/15/19,
                 closeDate: 11/16/19
             }]}}))
-        });
-        
-        test('should allow you to create a new trade', () => {
-            // Calls the API when submitting a new trade
-        
         });
 
         test('should allow you to edit a trade', async () => {
