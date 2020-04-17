@@ -93,7 +93,7 @@ export default class Trades extends Component {
 
         if (this.state.showNewTradeWindow === true) {
             // Show the window
-            newTradeWindow = <NewTrade onSubmitClick={ () => this.postTradeHandler('TSLA',1.25,1)} onCancelClick={ ()=> this.newTradeToggleHandler}/>
+            newTradeWindow = <NewTrade onSubmitClick={ () => this.postTradeHandler('TSLA',1.25,1)} onCancelClick={ ()=> this.newTradeToggleHandler(false)}/>
         }
         else {
             // Don't show it
