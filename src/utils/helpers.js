@@ -1,5 +1,5 @@
 export function tickerValidator(ticker) {
-    const validTickerRegex = /[A-Za-z]{1,4}/
+    const validTickerRegex = /^[A-Za-z]{1,4}$/
 
     return ticker.match(validTickerRegex) === null ? false : true
 }
