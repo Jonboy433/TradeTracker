@@ -28,10 +28,34 @@ describe('NewTrade', () => {
         })
         
         
-        test('should only allow correct formats in ticker field', () => {
-            // Stock tickers are 3 or 4 alpha characters only
+        test('should not display validation error on first render', () => {
+            const { queryByText } = render(<NewTrade onCancelClick={jest.fn()}/>)
 
+            const errMsg = queryByText(/Ticker is required/)
+
+            expect(errMsg).toBeNull();
+        });
+        
+        test('should only display validation error after form submission', () => {
+            // Stock tickers are 3 or 4 alpha characters only
             // Options are different e.g. TSLA200515C590 or CCL200417C10
+            const { queryByText, getByText, getByPlaceholderText } = render(<NewTrade onCancelClick={jest.fn()}/>)
+
+            // find text fields and enter invalid data
+            // Ticker: 456; Price: 2.45; Quantity: 1
+            const tickerInput = getByPlaceholderText(/Ticker/)
+
+            fireEvent.change(tickerInput, { target: {value: ''}})
+
+            const submitBtn = getByText(/Submit Trade/)
+            
+            let errMsg = queryByText(/Ticker is required/)
+            expect(errMsg).toBeNull();
+            
+            fireEvent.click(submitBtn)
+            
+            errMsg = queryByText(/Ticker is required/)
+            expect(errMsg).not.toBeNull();
         });
 
         test('should prevent submit if form is not valid', () => {

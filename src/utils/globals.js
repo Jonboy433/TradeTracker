@@ -1,0 +1,6 @@
+export const TRADE_TICKER_REQUIRED='Ticker is required'
+export const TRADE_TICKER_INVALID='Ticker format is invalid'
+export const TRADE_PRICE_REQUIRED='Price is required'
+export const TRADE_PRICE_INVALID='Price is invalid'
+export const TRADE_QUANTITY_REQUIRED='Quantity is required'
+export const TRADE_QUANTITY_INVALID='Quantity is invalid'
