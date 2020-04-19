@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import * as helpers from '../../utils/helpers.ts'
+import * as helpers from '../../utils/helpers.js'
 import axios from 'axios'
 
 const NewTrade = (props) => {

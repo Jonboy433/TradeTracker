@@ -1,13 +1,13 @@
-const globals = require('../utils/globals')
+const globals = require('./globals')
 
-export function tickerValidator(ticker:string) : Array<any> {
+export function tickerValidator(ticker) {
     const validTickerRegex = /^[A-Za-z]{1,4}$|^[A-Za-z]{1,4}[0-9]{6}[A-Za-z]{1}[1-9]{1}[0-9]{1,5}$/
     
     if (ticker === "") {
         return [false, globals.TRADE_TICKER_REQUIRED]
     }
 
-    if (ticker.match(validTickerRegex) === null) {
+    if (ticker.toString().match(validTickerRegex) === null) {
         
         return [false, globals.TRADE_TICKER_INVALID]
     }
@@ -26,7 +26,7 @@ export function priceValidator(price) {
         return [false, globals.TRADE_PRICE_REQUIRED]
     }
 
-    if (price.match(validPriceRegex) === null) {
+    if (price.toString().match(validPriceRegex) === null) {
         
         return [false, globals.TRADE_PRICE_INVALID]
     }
@@ -42,7 +42,7 @@ export function quantityValidator(quantity) {
         return [false, globals.TRADE_QUANTITY_REQUIRED]
     }
 
-    if (quantity.match(validQuantityRegex) === null) {
+    if (quantity.toString().match(validQuantityRegex) === null) {
         
         return [false, globals.TRADE_QUANTITY_INVALID]
     }
