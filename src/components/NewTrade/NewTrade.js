@@ -10,7 +10,11 @@ const [newTradeQuantity, setNewTradeQuantity] = useState('')
 
 // Form defaults to invalid on render
 const [isFormValid,setFormValid] = useState(false)
-const [errMsg, setErrMsg] = useState('')
+const [errorMessages, setErrMsg] = useState({
+    ticker: [],
+    price: [],
+    quantity: []
+})
 
 // Toggle to show the error messages or not
 const [showErrors, setShowErrors] = useState(false)
@@ -27,22 +31,31 @@ useEffect(() => {
 }, [newTradeTicker, newTradePrice, newTradeQuantity])
 
 const checkFormValidity = () => {
-    //if (!isFirstRender) {
-
         const [isTickerValid, errorMessageTicker] = helpers.tickerValidator(newTradeTicker)
         const [isPriceValid, errorMessagePrice] = helpers.priceValidator(newTradePrice)
         const [isQuantityValid, errorMessageQuantity] = helpers.quantityValidator(newTradeQuantity)
 
+        
         if (isTickerValid && isPriceValid && isQuantityValid) {
             setFormValid(true)
 
             // Ticker is now valid; clear out any errors
-            setErrMsg([])
+            setErrMsg({
+                ticker: [],
+                price: [],
+                quantity: []
+            })
+           
         } else {
             setFormValid(false)
-            setErrMsg(errorMessageTicker)
+
+            setErrMsg({
+                ...errorMessages,
+                ticker: [errorMessageTicker],
+                price: [errorMessagePrice],
+                quantity: [errorMessageQuantity]
+            })
         }
-    //}
 }
 
 const submitHandler = (event) => {
@@ -70,13 +83,23 @@ return <div>
     <input name="ticker" onChange={event => setNewTradeTicker(event.target.value)} type="text" placeholder='Ticker' />
     { (() => {
         if(showErrors) {
-            return <span>{errMsg}</span>
+            return <span>{errorMessages.ticker}</span>
         }
     })()}
     <br />
     <input name="price" onChange={event => setNewTradePrice(event.target.value)} type="text" placeholder='Price' />
+    { (() => {
+        if(showErrors) {
+            return <span>{errorMessages.price}</span>
+        }
+    })()}
     <br />
     <input name="quantity" onChange={event => setNewTradeQuantity(event.target.value)} type="text" placeholder='Quantity' />
+    { (() => {
+        if(showErrors) {
+            return <span>{errorMessages.quantity}</span>
+        }
+    })()}
     <br />
     <button type="submit">Submit Trade</button>
     <button onClick={()=> {props.onCancelClick(false)}}>Cancel</button>

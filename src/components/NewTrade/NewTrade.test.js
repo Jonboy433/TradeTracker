@@ -35,6 +35,26 @@ describe('NewTrade', () => {
 
             expect(errMsg).toBeNull();
         });
+
+        test('should display price validation error', () => {
+            const { queryByText, getByText } = render(<NewTrade onCancelClick={jest.fn()}/>)
+          
+            const submitBtn = getByText(/Submit Trade/)
+            fireEvent.click(submitBtn)
+            let errMsg = queryByText(/Price is required/)
+            expect(errMsg).not.toBeNull();
+            
+            
+        });
+
+        test('should display quantity validation error', () => {
+            const { queryByText, getByText } = render(<NewTrade onCancelClick={jest.fn()}/>)
+          
+            const submitBtn = getByText(/Submit Trade/)
+            fireEvent.click(submitBtn)
+            let errMsg = queryByText(/Quantity is required/)
+            expect(errMsg).not.toBeNull();
+        });
         
         test('should only display validation error after form submission', () => {
             // Stock tickers are 3 or 4 alpha characters only
