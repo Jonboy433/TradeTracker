@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import * as helpers from '../../utils/helpers.js'
+import Button from 'react-bootstrap/Button'
 import axios from 'axios'
 
 const NewTrade = (props) => {
@@ -102,7 +103,7 @@ return <div>
     })()}
     <br />
     <button type="submit">Submit Trade</button>
-    <button onClick={()=> {props.onCancelClick(false)}}>Cancel</button>
+    <Button onClick={()=> {props.onCancelClick(false)}}>Cancel</Button>
     </form>
 </div> 
 
