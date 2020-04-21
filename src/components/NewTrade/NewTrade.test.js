@@ -3,10 +3,10 @@ import { render, cleanup, fireEvent } from '@testing-library/react'
 import NewTrade from '../NewTrade/NewTrade'
 import mockAxios from 'axios'
 
-
 describe('NewTrade', () => {
-    beforeEach(() => {
     
+    beforeEach(() => {
+
     });
 
     afterEach( () => {
@@ -31,29 +31,20 @@ describe('NewTrade', () => {
         test('should not display validation error on first render', () => {
             const { queryByText } = render(<NewTrade onCancelClick={jest.fn()}/>)
 
-            const errMsg = queryByText(/Ticker is required/)
+            const errMsg = queryByText(/Ticker is required/i)
 
             expect(errMsg).toBeNull();
         });
 
-        test('should display price validation error', () => {
+        test('should display proper validation error', () => {
             const { queryByText, getByText } = render(<NewTrade onCancelClick={jest.fn()}/>)
           
-            const submitBtn = getByText(/Submit Trade/)
+            const submitBtn = getByText(/Submit Trade/i)
             fireEvent.click(submitBtn)
-            let errMsg = queryByText(/Price is required/)
-            expect(errMsg).not.toBeNull();
-            
-            
-        });
-
-        test('should display quantity validation error', () => {
-            const { queryByText, getByText } = render(<NewTrade onCancelClick={jest.fn()}/>)
-          
-            const submitBtn = getByText(/Submit Trade/)
-            fireEvent.click(submitBtn)
-            let errMsg = queryByText(/Quantity is required/)
-            expect(errMsg).not.toBeNull();
+            let errMsgPrice = queryByText(/Price is required/i)
+            let errMsgQuantity = queryByText(/Quantity is required/i)
+            expect(errMsgPrice).not.toBeNull();
+            expect(errMsgQuantity).not.toBeNull(); 
         });
         
         test('should only display validation error after form submission', () => {
@@ -63,18 +54,18 @@ describe('NewTrade', () => {
 
             // find text fields and enter invalid data
             // Ticker: 456; Price: 2.45; Quantity: 1
-            const tickerInput = getByPlaceholderText(/Ticker/)
+            const tickerInput = getByPlaceholderText(/Ticker/i)
 
             fireEvent.change(tickerInput, { target: {value: ''}})
 
-            const submitBtn = getByText(/Submit Trade/)
+            const submitBtn = getByText(/Submit Trade/i)
             
-            let errMsg = queryByText(/Ticker is required/)
+            let errMsg = queryByText(/Ticker is required/i)
             expect(errMsg).toBeNull();
             
             fireEvent.click(submitBtn)
             
-            errMsg = queryByText(/Ticker is required/)
+            errMsg = queryByText(/Ticker is required/i)
             expect(errMsg).not.toBeNull();
         });
 
@@ -83,16 +74,16 @@ describe('NewTrade', () => {
 
             // find text fields and enter invalid data
             // Ticker: 456; Price: 2.45; Quantity: 1
-            const tickerInput = getByPlaceholderText(/Ticker/)
-            const priceInput = getByPlaceholderText(/Price/)
-            const quantityInput = getByPlaceholderText(/Quantity/)
+            const tickerInput = getByPlaceholderText(/Ticker/i)
+            const priceInput = getByPlaceholderText(/Price/i)
+            const quantityInput = getByPlaceholderText(/Quantity/i)
 
             fireEvent.change(tickerInput, { target: {value: '456'}})
             fireEvent.change(priceInput, { target: {value: 1.23}})
             fireEvent.change(quantityInput, { target: {value: 1}})
 
             // Click submit button
-            const submitBtn = getByText(/Submit Trade/)
+            const submitBtn = getByText(/Submit Trade/i)
             fireEvent.click(submitBtn)
 
             expect(mockAxios.post).not.toHaveBeenCalled();
@@ -107,16 +98,16 @@ describe('NewTrade', () => {
 
             // find text fields and enter new trade data
             // Ticker: TSLA; Price: 2.45; Quantity: 1
-            const tickerInput = getByPlaceholderText(/Ticker/)
-            const priceInput = getByPlaceholderText(/Price/)
-            const quantityInput = getByPlaceholderText(/Quantity/)
+            const tickerInput = getByPlaceholderText(/Ticker/i)
+            const priceInput = getByPlaceholderText(/Price/i)
+            const quantityInput = getByPlaceholderText(/Quantity/i)
 
             fireEvent.change(tickerInput, { target: {value: 'AAPL'}})
             fireEvent.change(priceInput, { target: {value: 1.23}})
             fireEvent.change(quantityInput, { target: {value: 1}})
 
             // Click submit button
-            const submitBtn = getByText(/Submit Trade/)
+            const submitBtn = getByText(/Submit Trade/i)
             fireEvent.click(submitBtn)
 
             // Verify the post details are correct
